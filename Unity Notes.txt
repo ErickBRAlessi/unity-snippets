@@ -1,0 +1,75 @@
+Alterações relativas a rigidbody devem ser atualizadas dentro do FixedUpdate
+Rotações são tratadas por quartanion
+Para desatrelar uma velocidade do FPS deve-se multiplica-la por Time.DeltaTime
+Exemplo Script para seguir:
+void FixedUpdate()
+    {
+        float distancia = Vector3.Distance(transform.position, Jogador.transform.position);
+
+        if(distancia > 2)
+        {
+            Vector3 direcao = Jogador.transform.position - transform.position;
+            GetComponent<Rigidbody>().MovePosition
+                (GetComponent<Rigidbody>().position + 
+                direcao.normalized * Velocidade * Time.deltaTime);
+
+            Quaternion novaRotacao = Quaternion.LookRotation(direcao);
+            GetComponent<Rigidbody>().MoveRotation(novaRotacao);
+
+        }
+    }
+
+Para frente do personagem Transform.forward
+
+
+Mirar o personagem no mouse:
+
+Ray raio = Camera.main.ScreenPointToRay(Input.mousePosition);
+        Debug.DrawRay(raio.origin, raio.direction * 100, Color.red);
+
+        RaycastHit impacto;
+
+        if(Physics.Raycast(raio, out impacto, 100))
+        {
+            Vector3 posicaoMiraJogador = impacto.point - transform.position;
+
+            posicaoMiraJogador.y = transform.position.y;
+
+            Quaternion novaRotacao = Quaternion.LookRotation(posicaoMiraJogador);
+
+            GetComponent<Rigidbody>().MoveRotation(novaRotacao);
+        }
+
+Cone: 
+var int_HitRadiusDistance = 20;
+function Update ()  {  
+    var ray1 = new Ray( transform.position, transform.forward );    
+    var hit : RaycastHit;              
+    if( Physics.Raycast( ray1, hit, int_HitRadiusDistance ) )   {
+        if( (hit.collider.name == "FPS") || (hit.collider.name == "Player") )   {  
+            // TODO: Attack-code   
+        }
+    }
+}
+
+Collider:
+void OnTriggerEnter(Collider objetoDeColisao)
+{
+    if(objetoDeColisao.tag == "Inimigo")
+    {
+        Destroy(objetoDeColisao.gameObject);
+    }
+
+    Destroy(gameObject);
+}
+
+Pausar Jogo:
+Time.timeScale = 1;
+Time.timeScale = 0;
+
+Pegar Objeto Filho e Ativar
+void Start () {
+    Jogador = GameObject.FindWithTag("Jogador");
+    int geraTipoZumbi = Random.Range(1, 28);
+    transform.GetChild(geraTipoZumbi).gameObject.SetActive(true);
+}
